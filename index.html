@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBC School System Dashboard (Simplified)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- jsPDF and html2canvas for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* Custom styles for dark mode */
+        html.dark {
+            background-color: #1a202c; /* Dark background */
+            color: #e2e8f0; /* Light text */
+        }
+        html.dark .bg-gradient-to-br {
+            background-image: linear-gradient(to bottom right, #2d3748, #1a202c);
+        }
+        html.dark .bg-white {
+            background-color: #2d3748;
+            color: #e2e8f0;
+        }
+        html.dark .shadow-2xl {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        html.dark .border-gray-200 {
+            border-color: #4a5568;
+        }
+        html.dark .text-gray-800 {
+            color: #e2e8f0;
+        }
+        html.dark .text-gray-600 {
+            color: #cbd5e0;
+        }
+        html.dark .text-gray-700 {
+            color: #cbd5e0;
+        }
+        html.dark .bg-gray-50 {
+            background-color: #2d3748;
+        }
+        html.dark .border-gray-300 {
+            border-color: #4a5568;
+        }
+        html.dark input, html.dark select, html.dark textarea {
+            background-color: #4a5568;
+            color: #e2e8f0;
+            border-color: #6b7280;
+        }
+        html.dark input::placeholder, html.dark textarea::placeholder {
+            color: #a0aec0;
+        }
+        html.dark .bg-blue-50 {
+            background-color: #3182ce20; /* A lighter blue for dark mode */
+            border-color: #3182ce50;
+        }
+        html.dark .text-blue-800 {
+            color: #90cdf4;
+        }
+        html.dark .text-blue-500 {
+            color: #63b3ed;
+        }
+        html.dark .bg-gray-100 {
+            background-color: #4a5568;
+        }
+        html.dark .text-gray-500 {
+            color: #a0aec0;
+        }
+        html.dark .border-blue-200 {
+            border-color: #63b3ed50;
+        }
+        html.dark .border-blue-100 {
+            border-color: #63b3ed30;
+        }
+        html.dark .bg-gray-200 {
+            background-color: #4a5568;
+        }
+        html.dark .bg-blue-700 {
+            background-color: #3182ce;
+        }
+        html.dark .bg-blue-600 {
+            background-color: #4299e1;
+        }
+        html.dark .bg-gradient-to-r {
+            background-image: linear-gradient(to right, #4299e1, #667eea);
+        }
+        html.dark .hover\:from-blue-700 {
+            --tw-gradient-from: #3182ce;
+            --tw-gradient-to: #3182ce;
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+        }
+        html.dark .hover\:to-indigo-800 {
+            --tw-gradient-to: #434190;
+        }
+        html.dark .shadow-inner {
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+        }
+        html.dark .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+        }
+        html.dark .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+        }
+        html.dark .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.15);
+        }
+        html.dark .shadow-2xl {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+        html.dark .bg-gray-900 {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        html.dark .border-b {
+            border-color: #4a5568;
+        }
+        html.dark .border-t {
+            border-color: #4a5568;
+        }
+        html.dark .toast {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+        html.dark .toast.success {
+            background-color: #38a169;
+        }
+        html.dark .toast.error {
+            background-color: #e53e3e;
+        }
+        html.dark .toast.info {
+            background-color: #3182ce;
+        }
+        html.dark .bg-green-600 {
+            background-color: #38a169;
+        }
+        html.dark .bg-red-600 {
+            background-color: #e53e3e;
+        }
+        html.dark .bg-yellow-600 {
+            background-color: #d69e2e;
+        }
+        html.dark .bg-orange-600 {
+            background-color: #dd6b20;
+        }
+        html.dark .bg-lime-600 {
+            background-color: #82c61e;
+        }
+        html.dark .bg-green-100 {
+            background-color: #38a16930;
+        }
+        html.dark .bg-red-100 {
+            background-color: #e53e3e30;
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        html.dark ::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        html.dark ::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+        html.dark ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+
+        /* Chart specific styles */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 200px; /* Fixed height for the chart */
+            overflow-x: auto; /* Allow horizontal scrolling if many data points */
+            padding-bottom: 20px; /* Space for labels */
+        }
+        .chart-line {
+            fill: none;
+            stroke: #4299e1;
+            stroke-width: 3;
+            transition: all 0.5s ease-out;
+        }
+        .chart-point {
+            fill: #4299e1;
+            stroke: #fff;
+            stroke-width: 2;
+            transition: all 0.5s ease-out;
+        }
+        .chart-label {
+            font-size: 0.75rem; /* text-xs */
+            color: #4a5568; /* gray-700 */
+        }
+        html.dark .chart-label {
+            color: #cbd5e0;
+        }
+        .chart-grid-line {
+            stroke: #e2e8f0;
+            stroke-dasharray: 2,2;
+        }
+        html.dark .chart-grid-line {
+            stroke: #4a5568;
+        }
+
+        /* Toast Notification styles */
+        #toastContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background-color: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: translateX(100%);
+            min-width: 250px;
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast.success { background-color: #4CAF50; }
+        .toast.error { background-color: #F44336; }
+        .toast.info { background-color: #2196F3; }
+        .toast-icon {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 flex flex-col items-center justify-center transition-colors duration-300">
+
+    <!-- Custom Modal Component -->
+    <div id="customModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full text-center border border-gray-200">
+            <h3 id="modalTitle" class="text-xl font-bold text-gray-800 mb-4">Notification</h3>
+            <p id="modalMessage" class="text-gray-700 mb-6"></p>
+            <button id="modalCloseBtn" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-md">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Student Management Modal -->
+    <div id="studentModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full border border-gray-200">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Manage Students</h3>
+            <div class="mb-6">
+                <h4 class="text-xl font-semibold text-gray-700 mb-3">Add New Student</h4>
+                <div class="flex gap-4">
+                    <input type="text" id="newStudentName" class="flex-1 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm" placeholder="Student Name" />
+                    <button id="addStudentBtn" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition shadow-md">Add Student</button>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-xl font-semibold text-gray-700 mb-3">Your Students</h4>
+                <div id="studentsList" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                    <p class="text-center text-gray-500">No students added yet.</p>
+                </div>
+            </div>
+            <button id="studentModalCloseBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Assistant Modal -->
+    <div id="aiAssistantModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full border border-gray-200 flex flex-col h-[80vh]">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">AI Study Assistant</h3>
+            <div id="chatHistory" class="flex-1 overflow-y-auto pr-2 mb-6 space-y-4">
+                <!-- Chat messages will be appended here -->
+                <div class="flex justify-start">
+                    <div class="bg-blue-100 text-blue-800 p-3 rounded-lg max-w-[80%] shadow-sm">
+                        Hello! I'm your AI Study Assistant. How can I help you with your CBC studies today?
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <input type="text" id="aiInput" class="flex-1 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm" placeholder="Ask me about CBC topics, study tips, or career guidance..." />
+                <button id="aiSendBtn" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition shadow-md">Send</button>
+            </div>
+            <button id="aiAssistantModalCloseBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Main Content Wrapper -->
+    <div id="reportContent" class="w-full max-w-6xl mx-auto bg-white rounded-xl shadow-2xl border border-gray-200 my-8 overflow-hidden">
+        <!-- Header Section -->
+        <header class="bg-blue-700 text-white p-6 flex justify-between items-center rounded-t-xl">
+            <h1 class="text-3xl font-extrabold tracking-tight">
+                <span class="text-blue-200">CBC</span> School System
+            </h1>
+            <div class="flex items-center space-x-4">
+                <div id="studentSelector" class="relative">
+                    <button id="currentStudentBtn" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition shadow-md flex items-center">
+                        <span id="selectedStudentName">Select Student</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div id="studentDropdown" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-10 hidden">
+                        <a href="#" id="manageStudentsLink" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Manage Students</a>
+                        <div class="border-t border-gray-200 my-1"></div>
+                        <div id="studentListDropdown">
+                            <!-- Student list will be populated here -->
+                            <p class="px-4 py-2 text-gray-500 text-sm">No students</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="aiAssistantBtn" class="p-2 rounded-full bg-blue-600 hover:bg-blue-500 transition duration-300 ease-in-out shadow-md" title="AI Assistant">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 17v5m6.44-4.118l.803.803L22 18.006 20.994 20l-1.107-1.107m-.715-6.533l-.802-.802C15.078 10.324 13.868 10 12 10c-1.868 0-3.078.324-4.373 1.629l-.802.802M12 14v4m-4 0h8m-1-10h.01M16 20h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h2" />
+                    </svg>
+                </button>
+                <button id="darkModeToggle" class="p-2 rounded-full bg-blue-600 hover:bg-blue-500 transition duration-300 ease-in-out shadow-md" title="Toggle Dark Mode">
+                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path id="darkModeIcon" stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9 9 0 008.354-5.646z" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <main class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Performance Summary Card -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col justify-between">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Overall Performance
+                </h2>
+                <div id="performanceSummary" class="flex flex-col items-center justify-center flex-grow">
+                    <p class="text-center text-gray-500 text-lg flex-grow flex items-center justify-center">
+                        <span id="performanceSummaryMessage">Please select a student and enter grades below.</span>
+                    </p>
+                </div>
+                <button id="updateGradesBtn" class="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-lg text-md font-semibold hover:bg-blue-600 transition duration-300 ease-in-out shadow-md">
+                    Go to Grade Input
+                </button>
+            </div>
+
+            <!-- Subject Breakdown Chart -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 lg:col-span-2">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 5h18M4 9h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V10a1 1 0 011-1z" />
+                    </svg>
+                    Subject Performance Breakdown
+                </h2>
+                <div id="subjectBarChart" class="space-y-4">
+                    <p class="text-center text-gray-500 text-lg">
+                        <span id="subjectBarChartMessage">No subject data available. Select a student and enter grades below.</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Performance Trend Chart -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 lg:col-span-3">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8L11 20M4 12c0 4.418 4.03 8 9 8s9-3.582 9-8-4.03-8-9-8-9 3.582-9 8z" />
+                    </svg>
+                    Performance Trend Over Time
+                </h2>
+                <div id="performanceLineChart" class="chart-container">
+                    <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
+                        <g class="chart-grid"></g>
+                        <g class="chart-data"></g>
+                        <g class="chart-labels"></g>
+                    </svg>
+                    <p class="absolute inset-0 flex items-center justify-center text-center text-gray-500 text-lg">
+                        <span id="performanceLineChartMessage">No historical data for trend analysis. Select a student and enter grades below.</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Course Recommendations -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 lg:col-span-3">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    Course & Career Recommendations
+                </h2>
+                <ul id="recommendationsList" class="list-disc list-inside text-gray-700 space-y-2">
+                    <p class="text-center text-gray-500 text-lg">
+                        <span id="recommendationsListMessage">Recommendations will appear here after grade assessment.</span>
+                    </p>
+                </ul>
+            </div>
+        </main>
+
+        <!-- Grade Input Form Section -->
+        <section id="gradeFormSection" class="p-8 bg-gray-50 border-t border-gray-200">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Enter Grades for <span id="currentStudentNameInForm" class="text-blue-600 ml-2">Selected Student</span>
+            </h2>
+            <p class="text-center text-gray-600 mb-8 text-md">
+                Input grades from 1 (Needs Improvement) to 5 (Excellent) for each subject.
+            </p>
+
+            <div id="subjectInputsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Subject inputs will be dynamically generated here -->
+                <p class="col-span-full text-center text-gray-500">
+                    <span id="subjectInputsMessage">Please select a student from the dropdown above to enter grades.</span>
+                </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button id="assessGradesBtn" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-4 px-6 rounded-lg text-xl font-bold hover:from-blue-700 hover:to-indigo-800 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-xl">
+                    Assess Grades & Update Dashboard
+                </button>
+                <button id="clearFormBtn" class="flex-none bg-gray-300 text-gray-800 py-4 px-6 rounded-lg text-xl font-bold hover:bg-gray-400 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-400 shadow-lg">
+                    Clear Form
+                </button>
+            </div>
+            <button id="printReportBtn" class="mt-4 w-full bg-green-500 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300 shadow-lg">
+                Export Report to PDF
+            </button>
+        </section>
+
+        <!-- Historical Assessments Section -->
+        <section class="p-8 bg-gray-100 border-t border-gray-200">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h.01M7 16h.01M17 16h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M6 21h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Historical Assessments for <span id="currentStudentNameInHistory" class="text-blue-600 ml-2">Selected Student</span>
+            </h2>
+            <div id="historicalAssessmentsList" class="space-y-4 max-h-96 overflow-y-auto pr-2">
+                <p class="text-center text-gray-500 text-lg">
+                    <span id="historicalAssessmentsMessage">No past assessments found for this student.</span>
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer"></div>
+
+    <script type="module">
+        // Global variables for local storage
+        const LOCAL_STORAGE_PREFIX = 'cbc_app_local_'; // Prefix for all localStorage keys
+
+        // --- State Variables ---
+        let currentGrades = {};
+        let currentAssessmentResult = null;
+        let currentRecommendations = [];
+        let currentSubjectChartData = [];
+        let currentPerformanceTrendData = [];
+        let historicalAssessments = [];
+
+        let allStudents = [];
+        let selectedStudentId = null;
+        let selectedStudentName = "No Student Selected";
+
+        // Hardcoded subjects with weights based on a common school setup
+        // Weights are 1-5, higher means more important
+        const configuredSubjects = [
+            // Core Subjects (typically higher weight)
+            { id: 'english', name: 'English', weight: 5 },
+            { id: 'kiswahili', name: 'Kiswahili', weight: 5 },
+            { id: 'mathematics', name: 'Mathematics', weight: 5 },
+            { id: 'science', name: 'Science', weight: 4 },
+            { id: 'socialStudies', name: 'Social Studies', weight: 3 },
+            { id: 'creIreHre', name: 'CRE/IRE/HRE', weight: 3 }, // Religious Education
+
+            // Optional/Practical Subjects (can vary, often lower weight for overall average)
+            { id: 'agriculture', name: 'Agriculture', weight: 2 },
+            { id: 'businessStudies', name: 'Business Studies', weight: 3 },
+            { id: 'computerStudies', name: 'Computer Studies', weight: 4 },
+            { id: 'homeScience', name: 'Home Science', weight: 2 },
+            { id: 'artDesign', name: 'Art & Design', weight: 1 },
+            { id: 'performingArts', name: 'Performing Arts', weight: 1 },
+            { id: 'sports', name: 'Sports', weight: 1 },
+            // Add more subjects as needed, e.g., French, German, specific technical subjects
+        ];
+
+
+        // --- DOM Elements ---
+        const performanceSummaryEl = document.getElementById('performanceSummary');
+        const performanceSummaryMessageEl = document.getElementById('performanceSummaryMessage');
+        const subjectBarChartEl = document.getElementById('subjectBarChart');
+        const subjectBarChartMessageEl = document.getElementById('subjectBarChartMessage');
+        const performanceLineChartEl = document.getElementById('performanceLineChart');
+        const performanceLineChartMessageEl = document.getElementById('performanceLineChartMessage');
+        const recommendationsListEl = document.getElementById('recommendationsList');
+        const recommendationsListMessageEl = document.getElementById('recommendationsListMessage');
+        const gradeFormSectionEl = document.getElementById('gradeFormSection');
+        const assessGradesBtn = document.getElementById('assessGradesBtn');
+        const clearFormBtn = document.getElementById('clearFormBtn');
+        const printReportBtn = document.getElementById('printReportBtn');
+        const updateGradesBtn = document.getElementById('updateGradesBtn');
+        const historicalAssessmentsListEl = document.getElementById('historicalAssessmentsList');
+        const historicalAssessmentsMessageEl = document.getElementById('historicalAssessmentsMessage');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+        const currentStudentBtn = document.getElementById('currentStudentBtn');
+        const selectedStudentNameEl = document.getElementById('selectedStudentName');
+        const studentDropdown = document.getElementById('studentDropdown');
+        const manageStudentsLink = document.getElementById('manageStudentsLink');
+        const studentListDropdown = document.getElementById('studentListDropdown');
+        const currentStudentNameInForm = document.getElementById('currentStudentNameInForm');
+        const currentStudentNameInHistory = document.getElementById('currentStudentNameInHistory');
+        const subjectInputsContainer = document.getElementById('subjectInputsContainer');
+        const subjectInputsMessageEl = document.getElementById('subjectInputsMessage');
+        const aiAssistantBtn = document.getElementById('aiAssistantBtn');
+
+        // Modals and their elements
+        const customModal = document.getElementById('customModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        const studentModal = document.getElementById('studentModal');
+        const newStudentNameInput = document.getElementById('newStudentName');
+        const addStudentBtn = document.getElementById('addStudentBtn');
+        const studentsListEl = document.getElementById('studentsList');
+        const studentModalCloseBtn = document.getElementById('studentModalCloseBtn');
+
+        const aiAssistantModal = document.getElementById('aiAssistantModal');
+        const chatHistoryEl = document.getElementById('chatHistory');
+        const aiInput = document.getElementById('aiInput');
+        const aiSendBtn = document.getElementById('aiSendBtn');
+        const aiAssistantModalCloseBtn = document.getElementById('aiAssistantModalCloseBtn');
+
+        const toastContainer = document.getElementById('toastContainer');
+
+        // --- Local Storage Helper Functions ---
+
+        /**
+         * Saves data to localStorage.
+         * @param {string} key - The key to store data under.
+         * @param {any} data - The data to store.
+         */
+        function saveData(key, data) {
+            try {
+                localStorage.setItem(LOCAL_STORAGE_PREFIX + key, JSON.stringify(data));
+            } catch (e) {
+                console.error("Error saving to localStorage:", e);
+                showToast("Failed to save data locally. Storage might be full.", "error");
+            }
+        }
+
+        /**
+         * Loads data from localStorage.
+         * @param {string} key - The key to load data from.
+         * @param {any} defaultValue - Default value if key not found or error.
+         * @returns {any} The loaded data or default value.
+         */
+        function loadData(key, defaultValue = null) {
+            try {
+                const data = localStorage.getItem(LOCAL_STORAGE_PREFIX + key);
+                return data ? JSON.parse(data) : defaultValue;
+            } catch (e) {
+                console.error("Error loading from localStorage:", e);
+                showToast("Failed to load data locally. Data might be corrupted.", "error");
+                return defaultValue;
+            }
+        }
+
+        /**
+         * Removes data from localStorage.
+         * @param {string} key - The key to remove.
+         */
+        function deleteData(key) {
+            localStorage.removeItem(LOCAL_STORAGE_PREFIX + key);
+        }
+
+        // --- General Helper Functions ---
+
+        /**
+         * Shows a custom modal with a message and title.
+         * @param {string} message - The message to display.
+         * @param {string} title - The title of the modal.
+         */
+        function showModal(message, title = "Notification") {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            customModal.classList.remove('hidden');
+        }
+
+        /**
+         * Hides the custom modal.
+         */
+        function hideModal() {
+            customModal.classList.add('hidden');
+        }
+
+        /**
+         * Displays a toast notification.
+         * @param {string} message - The message to display.
+         * @param {string} type - 'success', 'error', 'info'.
+         * @param {number} duration - How long to show (ms).
+         */
+        function showToast(message, type = 'info', duration = 3000) {
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast ${type}`;
+            let iconSvg = '';
+            if (type === 'success') {
+                iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white toast-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>';
+            } else if (type === 'error') {
+                iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white toast-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>';
+            } else { // info
+                iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white toast-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>';
+            }
+            toastEl.innerHTML = `${iconSvg}<span>${message}</span>`;
+            toastContainer.appendChild(toastEl);
+
+            setTimeout(() => {
+                toastEl.classList.add('show');
+            }, 10); // Small delay to trigger transition
+
+            setTimeout(() => {
+                toastEl.classList.remove('show');
+                toastEl.addEventListener('transitionend', () => toastEl.remove());
+            }, duration);
+        }
+
+        /**
+         * Converts a grade string to a numerical value.
+         * @param {string} grade - The grade string.
+         * @returns {number} The numerical grade (0 if invalid).
+         */
+        function getNumericalGrade(grade) {
+            const num = parseInt(grade, 10);
+            return isNaN(num) ? 0 : num;
+        }
+
+        /**
+         * Generates a simple unique ID (UUID v4 style).
+         * @returns {string} A unique ID.
+         */
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // --- Render Functions (UI Updates) ---
+
+        /**
+         * Renders the overall performance summary on the dashboard.
+         */
+        function renderPerformanceSummary() {
+            if (currentAssessmentResult) {
+                const performanceLevelClass =
+                    currentAssessmentResult.performanceLevel === 'Excellent' ? 'text-green-600' :
+                    currentAssessmentResult.performanceLevel === 'Very Good' ? 'text-lime-600' :
+                    currentAssessmentResult.performanceLevel === 'Good' ? 'text-yellow-600' :
+                    currentAssessmentResult.performanceLevel === 'Average' ? 'text-orange-600' :
+                    'text-red-600';
+
+                performanceSummaryEl.innerHTML = `
+                    <div class="text-5xl font-extrabold mb-2 ${performanceLevelClass}">
+                        ${currentAssessmentResult.performanceLevel}
+                    </div>
+                    <p class="text-xl text-gray-600">
+                        Average Score: <span class="font-bold">${currentAssessmentResult.averageScore}</span> / 5
+                    </p>
+                `;
+            } else {
+                performanceSummaryEl.innerHTML = `
+                    <p class="text-center text-gray-500 text-lg flex-grow flex items-center justify-center">
+                        <span id="performanceSummaryMessage">${getDashboardMessage()}</span>
+                    </p>
+                `;
+            }
+        }
+
+        /**
+         * Renders the subject performance breakdown bar chart.
+         * @param {Array<Object>} data - Array of subject data {name, grade}.
+         */
+        function renderSubjectBarChart(data) {
+            subjectBarChartEl.innerHTML = ''; // Clear previous chart
+            if (!data || data.length === 0) {
+                subjectBarChartEl.innerHTML = `<p class="text-center text-gray-500 text-lg">
+                    <span id="subjectBarChartMessage">${getDashboardMessage()}</span>
+                </p>`;
+                return;
+            }
+
+            const maxGrade = 5;
+            data.forEach(item => {
+                const barContainer = document.createElement('div');
+                barContainer.className = 'flex items-center';
+                barContainer.innerHTML = `
+                    <div class="w-28 text-right pr-4 text-gray-700 font-medium text-sm">
+                        ${item.name}
+                    </div>
+                    <div class="flex-1 bg-gray-200 rounded-full h-6 relative overflow-hidden">
+                        <div
+                            class="bg-blue-500 h-full rounded-full transition-all duration-500 ease-out"
+                            style="width: ${(item.grade / maxGrade) * 100}%"
+                        ></div>
+                        <span class="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
+                            ${item.grade}
+                        </span>
+                    </div>
+                `;
+                subjectBarChartEl.appendChild(barContainer);
+            });
+        }
+
+        /**
+         * Renders the performance trend line chart.
+         * @param {Array<Object>} data - Array of historical average scores {timestamp, averageScore}.
+         */
+        function renderPerformanceLineChart(data) {
+            const svg = performanceLineChartEl.querySelector('svg');
+            const gridGroup = svg.querySelector('.chart-grid');
+            const dataGroup = svg.querySelector('.chart-data');
+            const labelsGroup = svg.querySelector('.chart-labels');
+            const noDataMessage = performanceLineChartEl.querySelector('p');
+
+            gridGroup.innerHTML = '';
+            dataGroup.innerHTML = '';
+            labelsGroup.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                noDataMessage.classList.remove('hidden');
+                noDataMessage.innerHTML = `<span id="performanceLineChartMessage">${getDashboardMessage()}</span>`;
+                return;
+            }
+            noDataMessage.classList.add('hidden');
+
+            // Sort data by timestamp (ascending)
+            data.sort((a, b) => a.timestamp - b.timestamp);
+
+            const svgWidth = 600;
+            const svgHeight = 200;
+            const padding = 30; // Padding for axes and labels
+
+            const chartWidth = svgWidth - 2 * padding;
+            const chartHeight = svgHeight - 2 * padding;
+
+            const minX = data[0].timestamp;
+            const maxX = data[data.length - 1].timestamp;
+            const minY = 0; // Grades are 1-5, so min is 0 for visual
+            const maxY = 5;
+
+            // Scale functions
+            const xScale = (value) => padding + (value - minX) / (maxX - minX) * chartWidth;
+            const yScale = (value) => svgHeight - padding - (value - minY) / (maxY - minY) * chartHeight;
+
+            // Draw Y-axis grid lines and labels
+            for (let i = 0; i <= 5; i++) {
+                const y = yScale(i);
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute('x1', padding);
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', svgWidth - padding);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', 'currentColor');
+                line.setAttribute('stroke-width', '0.5');
+                line.classList.add('chart-grid-line');
+                gridGroup.appendChild(line);
+
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute('x', padding - 10);
+                text.setAttribute('y', y + 4);
+                text.setAttribute('text-anchor', 'end');
+                text.classList.add('chart-label');
+                text.textContent = i;
+                labelsGroup.appendChild(text);
+            }
+
+            // Draw X-axis labels (dates)
+            data.forEach((d, i) => {
+                const x = xScale(d.timestamp);
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute('x', x);
+                text.setAttribute('y', svgHeight - padding + 15);
+                text.setAttribute('text-anchor', 'middle');
+                text.classList.add('chart-label');
+                const date = new Date(d.timestamp);
+                text.textContent = `${date.getMonth() + 1}/${date.getDate()}`; // M/D
+                labelsGroup.appendChild(text);
+            });
+
+
+            // Draw the line path
+            const pathData = data.map((d, i) => {
+                const x = xScale(d.timestamp);
+                const y = yScale(d.averageScore);
+                return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+            }).join(' ');
+
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute('d', pathData);
+            path.classList.add('chart-line');
+            dataGroup.appendChild(path);
+
+            // Draw data points
+            data.forEach(d => {
+                const x = xScale(d.timestamp);
+                const y = yScale(d.averageScore);
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', 4);
+                circle.classList.add('chart-point');
+                dataGroup.appendChild(circle);
+            });
+        }
+
+
+        /**
+         * Renders the course and career recommendations.
+         * @param {Array<string>} recommendations - Array of recommendation strings.
+         */
+        function renderRecommendations(recommendations) {
+            recommendationsListEl.innerHTML = ''; // Clear previous recommendations
+            if (!recommendations || recommendations.length === 0) {
+                recommendationsListEl.innerHTML = `<p class="text-center text-gray-500 text-lg">
+                    <span id="recommendationsListMessage">${getDashboardMessage()}</span>
+                </p>`;
+                return;
+            }
+
+            recommendations.forEach(rec => {
+                const listItem = document.createElement('li');
+                listItem.className = 'flex items-start';
+                listItem.innerHTML = `<span class="mr-2 text-blue-500">&#x2022;</span> ${rec}`;
+                recommendationsListEl.appendChild(listItem);
+            });
+        }
+
+        /**
+         * Dynamically generates subject input fields based on configured subjects.
+         */
+        function renderSubjectInputs() {
+            subjectInputsContainer.innerHTML = ''; // Clear existing inputs
+
+            if (configuredSubjects.length === 0) {
+                subjectInputsContainer.innerHTML = `<p class="col-span-full text-center text-gray-500">
+                    <span id="subjectInputsMessage">No subjects configured. This is an internal error as subjects are hardcoded.</span>
+                </p>`;
+                return;
+            }
+
+            if (!selectedStudentId) {
+                subjectInputsContainer.innerHTML = `<p class="col-span-full text-center text-gray-500">
+                    <span id="subjectInputsMessage">Please select a student from the dropdown above to enter grades.</span>
+                </p>`;
+                return;
+            }
+
+
+            configuredSubjects.forEach(subject => {
+                const div = document.createElement('div');
+                div.className = 'flex flex-col';
+                div.innerHTML = `
+                    <label for="${subject.id}" class="text-gray-700 text-sm font-medium mb-1 capitalize">${subject.name}:</label>
+                    <input type="number" id="${subject.id}" name="${subject.id}" min="1" max="5" placeholder="1-5" class="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200 ease-in-out shadow-sm text-center text-lg font-semibold" value="${currentGrades[subject.id] || ''}" />
+                `;
+                subjectInputsContainer.appendChild(div);
+
+                // Add event listener to the newly created input
+                const input = document.getElementById(subject.id);
+                if (input) {
+                    input.addEventListener('input', handleGradeChange);
+                }
+            });
+        }
+
+
+        /**
+         * Populates the grade input form with given grades.
+         * @param {Object} gradesData - Object containing subject grades.
+         */
+        function populateForm(gradesData) {
+            currentGrades = { ...gradesData }; // Update current grades state
+            configuredSubjects.forEach(subject => {
+                const input = document.getElementById(subject.id);
+                if (input) {
+                    input.value = gradesData[subject.id] || '';
+                }
+            });
+        }
+
+        /**
+         * Clears all grade input fields and resets dashboard.
+         */
+        function clearForm() {
+            currentGrades = {};
+            configuredSubjects.forEach(subject => {
+                const input = document.getElementById(subject.id);
+                if (input) {
+                    input.value = '';
+                }
+            });
+            currentAssessmentResult = null;
+            currentRecommendations = [];
+            currentSubjectChartData = [];
+            currentPerformanceTrendData = [];
+
+            renderPerformanceSummary();
+            renderSubjectBarChart([]);
+            renderRecommendations([]);
+            renderPerformanceLineChart([]);
+        }
+
+        /**
+         * Gets a dynamic message for dashboard sections based on current state.
+         * @returns {string} The appropriate message.
+         */
+        function getDashboardMessage() {
+            if (configuredSubjects.length === 0) {
+                return "No subjects configured. This is an internal error as subjects are hardcoded.";
+            }
+            if (!selectedStudentId) {
+                return "Please select a student from the dropdown above to view their data.";
+            }
+            return "No data available. Enter grades for the selected student below.";
+        }
+
+        /**
+         * Handles changes in grade input fields.
+         * @param {Event} e - The input change event.
+         */
+        function handleGradeChange(e) {
+            const { name, value } = e.target;
+            if (value === '' || (/^[1-5]$/.test(value))) {
+                currentGrades[name] = value;
+            } else {
+                showToast("Please enter a grade between 1 and 5.", "error");
+                e.target.value = currentGrades[name] || ''; // Revert to last valid value or empty
+            }
+        }
+
+        /**
+         * Assesses grades, updates dashboard, and saves assessment.
+         */
+        async function assessGrades() {
+            if (!selectedStudentId) {
+                showModal("Please select a student to assess grades.", "No Student Selected");
+                return;
+            }
+            if (configuredSubjects.length === 0) {
+                showModal("No subjects configured. This is an internal error as subjects are hardcoded.", "Configuration Error");
+                return;
+            }
+
+            let totalWeightedScore = 0;
+            let totalWeight = 0;
+            let subjectCount = 0;
+            const subjectStrengths = {};
+            const subjectDataForChart = [];
+
+            configuredSubjects.forEach(subject => {
+                const grade = getNumericalGrade(currentGrades[subject.id]);
+                if (grade > 0) {
+                    const weight = subject.weight || 1; // Default weight to 1 if not set
+                    totalWeightedScore += grade * weight;
+                    totalWeight += weight;
+                    subjectCount++;
+                    subjectStrengths[subject.id] = grade;
+                    subjectDataForChart.push({ name: subject.name, grade: grade });
+                }
+            });
+
+            if (subjectCount === 0) {
+                showModal("Please enter grades for at least one subject to assess.", "No Grades Entered");
+                return;
+            }
+
+            const averageScore = totalWeightedScore / totalWeight;
+            let performanceLevel = '';
+
+            if (averageScore >= 4.5) {
+                performanceLevel = 'Excellent';
+            } else if (averageScore >= 3.5) {
+                performanceLevel = 'Very Good';
+            } else if (averageScore >= 2.5) {
+                performanceLevel = 'Good';
+            } else if (averageScore >= 1.5) {
+                performanceLevel = 'Average';
+            } else {
+                performanceLevel = 'Needs Improvement';
+            }
+
+            currentAssessmentResult = {
+                totalWeightedScore: totalWeightedScore,
+                averageScore: averageScore.toFixed(2),
+                performanceLevel: performanceLevel,
+            };
+            currentSubjectChartData = subjectDataForChart;
+
+            // Generate course recommendations (enhanced)
+            const generatedRecommendations = await generateRecommendationsWithLLM(performanceLevel, subjectStrengths);
+            currentRecommendations = generatedRecommendations;
+
+            // Update UI
+            renderPerformanceSummary();
+            renderSubjectBarChart(currentSubjectChartData);
+            renderRecommendations(currentRecommendations);
+
+            // Save to Local Storage
+            saveAssessment();
+        }
+
+        /**
+         * Generates recommendations using the Gemini LLM.
+         * @param {string} performanceLevel - The calculated performance level.
+         * @param {Object} subjectStrengths - Object of subject IDs to grades.
+         * @returns {Promise<Array<string>>} Array of recommendation strings.
+         */
+        async function generateRecommendationsWithLLM(performanceLevel, subjectStrengths) {
+            showToast("Generating personalized recommendations...", "info", 5000);
+            const prompt = `
+                A student has achieved a performance level of "${performanceLevel}" in the CBC curriculum.
+                Their subject strengths (grade out of 5) are:
+                ${Object.entries(subjectStrengths).map(([id, grade]) => {
+                    const subject = configuredSubjects.find(s => s.id === id);
+                    return subject ? `${subject.name}: ${grade}` : '';
+                }).filter(Boolean).join('\n')}
+
+                Based on this, provide 3-5 concise and encouraging career and course recommendations suitable for a Kenyan student.
+                Focus on practical and relevant paths within the Kenyan context.
+                Also, include a general piece of advice.
+                Format the output as a JSON array of strings, like:
+                ["Recommendation 1", "Recommendation 2", "General Advice"]
+            `;
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = {
+                    contents: chatHistory,
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "ARRAY",
+                            items: { "type": "STRING" }
+                        }
+                    }
+                };
+                const apiKey = ""; // Canvas will provide this
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API error: ${response.status} - ${errorData.error.message || 'Unknown error'}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const jsonString = result.candidates[0].content.parts[0].text;
+                    const parsedJson = JSON.parse(jsonString);
+                    showToast("Recommendations generated!", "success");
+                    return parsedJson;
+                } else {
+                    console.warn("Unexpected LLM response structure:", result);
+                    showToast("Could not generate detailed recommendations. Please try again.", "error");
+                    return ["Could not generate detailed recommendations. Please try again."];
+                }
+            } catch (e) {
+                console.error("Error calling Gemini API for recommendations:", e);
+                showToast(`Failed to get recommendations: ${e.message}`, "error");
+                return ["Failed to generate recommendations. Please check your internet connection or try again later."];
+            }
+        }
+
+
+        /**
+         * Saves the current assessment to localStorage.
+         */
+        function saveAssessment() {
+            if (!selectedStudentId) {
+                showModal("Student not selected. Cannot save assessment.", "Save Error");
+                return;
+            }
+            if (!currentAssessmentResult) {
+                showModal("No assessment data to save.", "Save Error");
+                return;
+            }
+
+            const timestamp = new Date();
+            const newAssessment = {
+                id: generateUUID(), // Unique ID for this assessment
+                grades: currentGrades,
+                result: currentAssessmentResult,
+                recommendations: currentRecommendations,
+                timestamp: timestamp.getTime(),
+                readableTimestamp: timestamp.toLocaleString(),
+            };
+
+            // Load existing assessments for this student
+            let studentAssessments = loadData(`assessments_${selectedStudentId}`, []);
+            studentAssessments.push(newAssessment);
+            saveData(`assessments_${selectedStudentId}`, studentAssessments);
+
+            // Re-load and render historical assessments to reflect changes
+            loadHistoricalAssessments();
+            showToast("Assessment saved successfully!", "success");
+        }
+
+        /**
+         * Loads historical assessments for the selected student from localStorage.
+         */
+        function loadHistoricalAssessments() {
+            if (!selectedStudentId) {
+                historicalAssessments = [];
+                historicalAssessmentsListEl.innerHTML = `<p class="text-center text-gray-500 text-lg">
+                    <span id="historicalAssessmentsMessage">${getDashboardMessage()}</span>
+                </p>`;
+                renderPerformanceLineChart([]);
+                return;
+            }
+
+            historicalAssessments = loadData(`assessments_${selectedStudentId}`, []);
+            // Sort client-side by timestamp in descending order for list
+            historicalAssessments.sort((a, b) => b.timestamp - a.timestamp);
+            renderHistoricalAssessments();
+
+            // Prepare data for trend chart (ascending order)
+            const trendData = [...historicalAssessments].sort((a, b) => a.timestamp - b.timestamp)
+                            .map(a => ({ timestamp: a.timestamp, averageScore: parseFloat(a.result.averageScore) }));
+            renderPerformanceLineChart(trendData);
+        }
+
+        /**
+         * Renders the list of historical assessments.
+         */
+        function renderHistoricalAssessments() {
+            historicalAssessmentsListEl.innerHTML = ''; // Clear previous list
+
+            if (historicalAssessments.length === 0) {
+                historicalAssessmentsListEl.innerHTML = `<p class="text-center text-gray-500 text-lg">
+                    <span id="historicalAssessmentsMessage">${getDashboardMessage()}</span>
+                </p>`;
+                return;
+            }
+
+            historicalAssessments.forEach(assessment => {
+                const listItem = document.createElement('div');
+                listItem.className = 'flex items-center justify-between bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition duration-200 ease-in-out';
+                listItem.innerHTML = `
+                    <div class="flex-1 cursor-pointer" data-id="${assessment.id}">
+                        <p class="font-semibold text-gray-800">${assessment.readableTimestamp}</p>
+                        <p class="text-sm text-gray-600">Performance: <span class="font-medium ${
+                            assessment.result.performanceLevel === 'Excellent' ? 'text-green-600' :
+                            assessment.result.performanceLevel === 'Very Good' ? 'text-lime-600' :
+                            assessment.result.performanceLevel === 'Good' ? 'text-yellow-600' :
+                            assessment.result.performanceLevel === 'Average' ? 'text-orange-600' :
+                            'text-red-600'
+                        }">${assessment.result.performanceLevel}</span></p>
+                    </div>
+                    <button class="delete-btn p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition duration-200" data-id="${assessment.id}" title="Delete Assessment">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                `;
+                historicalAssessmentsListEl.appendChild(listItem);
+            });
+
+            // Add event listeners for loading and deleting
+            historicalAssessmentsListEl.querySelectorAll('.flex-1.cursor-pointer').forEach(item => {
+                item.addEventListener('click', (e) => loadAssessment(e.currentTarget.dataset.id));
+            });
+            historicalAssessmentsListEl.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => deleteAssessment(e.currentTarget.dataset.id));
+            });
+        }
+
+        /**
+         * Loads a specific historical assessment into the form and dashboard.
+         * @param {string} assessmentId - The ID of the assessment to load.
+         */
+        function loadAssessment(assessmentId) {
+            const assessment = historicalAssessments.find(a => a.id === assessmentId);
+            if (assessment) {
+                populateForm(assessment.grades);
+                currentAssessmentResult = assessment.result;
+                currentRecommendations = assessment.recommendations;
+                // Reconstruct subject chart data
+                const subjectDataForChart = configuredSubjects.map(s => ({
+                    name: s.name,
+                    grade: getNumericalGrade(assessment.grades[s.id])
+                })).filter(item => item.grade > 0);
+                currentSubjectChartData = subjectDataForChart;
+
+                renderPerformanceSummary();
+                renderSubjectBarChart(currentSubjectChartData);
+                renderRecommendations(currentRecommendations);
+
+                showToast(`Assessment from ${assessment.readableTimestamp} loaded.`, "info");
+                // Scroll to the dashboard view
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                showModal("Assessment not found.", "Error");
+            }
+        }
+
+        /**
+         * Deletes a specific historical assessment from localStorage.
+         * @param {string} assessmentId - The ID of the assessment to delete.
+         */
+        function deleteAssessment(assessmentId) {
+            if (!selectedStudentId) {
+                showModal("Student not selected. Cannot delete assessment.", "Delete Error");
+                return;
+            }
+
+            let studentAssessments = loadData(`assessments_${selectedStudentId}`, []);
+            studentAssessments = studentAssessments.filter(a => a.id !== assessmentId);
+            saveData(`assessments_${selectedStudentId}`, studentAssessments);
+
+            showToast("Assessment deleted successfully!", "success");
+            // Re-load and render historical assessments to reflect changes
+            loadHistoricalAssessments();
+            // If the deleted assessment was currently displayed, clear the form.
+            if (currentAssessmentResult && currentAssessmentResult.id === assessmentId) { // Assuming assessmentResult also has an ID
+                 clearForm();
+            }
+        }
+
+        /**
+         * Toggles between light and dark mode.
+         */
+        function toggleDarkMode() {
+            const htmlEl = document.documentElement;
+            if (htmlEl.classList.contains('light')) {
+                htmlEl.classList.remove('light');
+                htmlEl.classList.add('dark');
+                darkModeIcon.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.325 6.675l-.707-.707M6.707 6.707l-.707-.707m12.728 0l-.707.707M6.707 17.293l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z'); // Sun icon
+            } else {
+                htmlEl.classList.remove('dark');
+                htmlEl.classList.add('light');
+                darkModeIcon.setAttribute('d', 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9 9 0 008.354-5.646z'); // Moon icon
+            }
+        }
+
+        /**
+         * Triggers the browser's print functionality for the report.
+         */
+        function printReport() {
+            // Hide elements not needed in the PDF
+            const elementsToHide = [
+                document.querySelector('header'), // Hide header (contains buttons)
+                document.getElementById('gradeFormSection'), // Hide form
+                document.getElementById('historicalAssessmentsList'), // Hide historical list
+                document.getElementById('toastContainer'), // Hide toasts
+                document.getElementById('customModal'), // Hide modals if open
+                document.getElementById('studentModal'),
+                document.getElementById('aiAssistantModal')
+            ];
+
+            elementsToHide.forEach(el => el && el.classList.add('hidden'));
+
+            // Use html2pdf to generate PDF from the main content wrapper
+            const element = document.getElementById('reportContent'); // The main container of the dashboard
+            html2pdf().from(element).set({
+                margin: 10,
+                filename: `CBC_Report_${selectedStudentName.replace(/\s/g, '_')}_${new Date().toLocaleDateString()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).save().then(() => {
+                // Show hidden elements after PDF generation
+                elementsToHide.forEach(el => el && el.classList.remove('hidden'));
+                showToast("Report exported as PDF!", "success");
+            }).catch(error => {
+                console.error("Error generating PDF:", error);
+                showToast("Failed to generate PDF report.", "error");
+                elementsToHide.forEach(el => el && el.classList.remove('hidden')); // Ensure elements are shown even on error
+            });
+        }
+
+        // --- Student Management Functions (Local Storage) ---
+        function showStudentModal() {
+            studentModal.classList.remove('hidden');
+            newStudentNameInput.value = '';
+            loadStudents(); // Ensure latest list is loaded
+        }
+
+        function hideStudentModal() {
+            studentModal.classList.add('hidden');
+        }
+
+        function loadStudents() {
+            allStudents = loadData(`students`, []); // No localUserId prefix now
+            renderStudentsList();
+            // If no student is selected, and there are students, select the first one
+            if (!selectedStudentId && allStudents.length > 0) {
+                selectStudent(allStudents[0].id, allStudents[0].name);
+            } else if (selectedStudentId && !allStudents.some(s => s.id === selectedStudentId)) {
+                // If selected student was deleted, reset selection
+                selectedStudentId = null;
+                selectedStudentName = "No Student Selected";
+                clearForm();
+                loadHistoricalAssessments(); // Reset listener
+                updateDashboardMessages();
+            } else if (selectedStudentId) {
+                // Update name in case it changed
+                const currentStudent = allStudents.find(s => s.id === selectedStudentId);
+                if (currentStudent) {
+                    selectedStudentName = currentStudent.name;
+                    updateDashboardMessages();
+                }
+            }
+        }
+
+        function addStudent() {
+            const studentName = newStudentNameInput.value.trim();
+            if (!studentName) {
+                showToast("Please enter a student name.", "error");
+                return;
+            }
+
+            const newStudent = {
+                id: generateUUID(),
+                name: studentName,
+                createdAt: new Date().getTime()
+            };
+
+            allStudents.push(newStudent);
+            saveData(`students`, allStudents); // No localUserId prefix now
+            newStudentNameInput.value = '';
+            showToast(`Student "${studentName}" added!`, "success");
+            loadStudents(); // Re-render the list
+        }
+
+        function selectStudent(studentId, studentName) {
+            selectedStudentId = studentId;
+            selectedStudentName = studentName;
+            updateDashboardMessages();
+            studentDropdown.classList.add('hidden'); // Hide dropdown after selection
+            clearForm(); // Clear existing data for new student
+            loadHistoricalAssessments(); // Load assessments for new student
+            showToast(`Selected student: ${studentName}`, "info");
+        }
+
+        function deleteStudent(studentId) {
+            // Delete assessments for this student first
+            deleteData(`assessments_${studentId}`); // No localUserId prefix now
+
+            // Then delete the student from the list
+            allStudents = allStudents.filter(s => s.id !== studentId);
+            saveData(`students`, allStudents); // No localUserId prefix now
+
+            if (selectedStudentId === studentId) {
+                selectedStudentId = null;
+                selectedStudentName = "No Student Selected";
+                clearForm();
+                loadHistoricalAssessments(); // Reset listener
+            }
+            showToast("Student and all their data deleted!", "success");
+            loadStudents(); // Re-render the list
+        }
+
+        function renderStudentsList() {
+            studentsListEl.innerHTML = '';
+            studentListDropdown.innerHTML = '';
+
+            if (allStudents.length === 0) {
+                studentsListEl.innerHTML = `<p class="text-center text-gray-500">No students added yet.</p>`;
+                studentListDropdown.innerHTML = `<p class="px-4 py-2 text-gray-500 text-sm">No students</p>`;
+                return;
+            }
+
+            allStudents.forEach(student => {
+                // For Student Management Modal
+                const modalListItem = document.createElement('div');
+                modalListItem.className = 'flex items-center justify-between bg-gray-50 p-3 rounded-md border border-gray-200';
+                modalListItem.innerHTML = `
+                    <span class="font-medium text-gray-800">${student.name}</span>
+                    <div class="flex gap-2">
+                        <button class="select-student-btn bg-blue-100 text-blue-600 px-3 py-1 rounded-md text-sm hover:bg-blue-200 transition" data-id="${student.id}" data-name="${student.name}">Select</button>
+                        <button class="delete-student-btn bg-red-100 text-red-600 px-3 py-1 rounded-md text-sm hover:bg-red-200 transition" data-id="${student.id}">Delete</button>
+                    </div>
+                `;
+                studentsListEl.appendChild(modalListItem);
+
+                // For Header Dropdown
+                const dropdownItem = document.createElement('a');
+                dropdownItem.href = "#";
+                dropdownItem.className = 'block px-4 py-2 text-gray-700 hover:bg-gray-100 select-student-btn';
+                dropdownItem.setAttribute('data-id', student.id);
+                dropdownItem.setAttribute('data-name', student.name);
+                dropdownItem.textContent = student.name;
+                studentListDropdown.appendChild(dropdownItem);
+            });
+
+            // Add event listeners for dynamically created buttons
+            studentsListEl.querySelectorAll('.select-student-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    selectStudent(e.target.dataset.id, e.target.dataset.name);
+                    hideStudentModal();
+                });
+            });
+            studentsListEl.querySelectorAll('.delete-student-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => deleteStudent(e.target.dataset.id));
+            });
+
+            studentListDropdown.querySelectorAll('.select-student-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => selectStudent(e.target.dataset.id, e.target.dataset.name));
+            });
+        }
+
+        // --- AI Assistant Functions ---
+        function showAIAssistantModal() {
+            aiAssistantModal.classList.remove('hidden');
+            chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight; // Scroll to bottom
+        }
+
+        function hideAIAssistantModal() {
+            aiAssistantModal.classList.add('hidden');
+        }
+
+        async function sendAIMessage() {
+            const userMessage = aiInput.value.trim();
+            if (!userMessage) return;
+
+            appendMessage('user', userMessage);
+            aiInput.value = ''; // Clear input
+
+            // Add a loading indicator for the AI response
+            const loadingMessageEl = appendMessage('ai', 'Thinking...', true);
+
+            try {
+                let chatHistory = [];
+                // Include current grades and performance for context
+                let context = `Current student performance: ${currentAssessmentResult ? currentAssessmentResult.performanceLevel + ' (Avg: ' + currentAssessmentResult.averageScore + ')' : 'Not assessed yet'}. `;
+                context += `Subject grades: ${JSON.stringify(currentGrades)}. `;
+                context += `Configured subjects: ${JSON.stringify(configuredSubjects)}. `;
+
+                chatHistory.push({ role: "user", parts: [{ text: context + userMessage }] });
+
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Canvas will provide this
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API error: ${response.status} - ${errorData.error.message || 'Unknown error'}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const aiResponseText = result.candidates[0].content.parts[0].text;
+                    loadingMessageEl.textContent = aiResponseText; // Update loading message with actual response
+                    loadingMessageEl.classList.remove('italic', 'text-gray-500'); // Remove loading styles
+                } else {
+                    loadingMessageEl.textContent = "Sorry, I couldn't get a response. Please try again.";
+                    loadingMessageEl.classList.add('text-red-500');
+                }
+            } catch (e) {
+                console.error("Error calling Gemini API for AI Assistant:", e);
+                loadingMessageEl.textContent = `Error: ${e.message}. Please try again.`;
+                loadingMessageEl.classList.add('text-red-500');
+            } finally {
+                chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight; // Scroll to bottom
+            }
+        }
+
+        function appendMessage(sender, text, isLoading = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            const bubble = document.createElement('div');
+            bubble.className = `p-3 rounded-lg max-w-[80%] shadow-sm ${sender === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-800'}`;
+            if (isLoading) {
+                bubble.classList.add('italic', 'text-gray-500');
+            }
+            bubble.textContent = text;
+            messageDiv.appendChild(bubble);
+            chatHistoryEl.appendChild(messageDiv);
+            chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight; // Scroll to bottom
+            return bubble; // Return the bubble element for potential updates (e.g., loading message)
+        }
+
+        // --- Load All Data (on app start) ---
+        function loadAllData() {
+            loadStudents(); // This will also handle selecting a student if available
+            // Curriculum is now hardcoded, so no need to load from storage
+            updateDashboardMessages();
+        }
+
+        // --- Update Dashboard Messages ---
+        function updateDashboardMessages() {
+            const message = getDashboardMessage();
+            performanceSummaryMessageEl.textContent = message;
+            subjectBarChartMessageEl.textContent = message;
+            performanceLineChartMessageEl.textContent = message;
+            recommendationsListMessageEl.textContent = message;
+            subjectInputsMessageEl.textContent = message;
+            historicalAssessmentsMessageEl.textContent = message;
+
+            selectedStudentNameEl.textContent = selectedStudentName;
+            currentStudentNameInForm.textContent = selectedStudentName;
+            currentStudentNameInHistory.textContent = selectedStudentName;
+
+            renderSubjectInputs(); // Re-render the grade input form
+        }
+
+
+        // --- Event Listeners ---
+        assessGradesBtn.addEventListener('click', assessGrades);
+        clearFormBtn.addEventListener('click', clearForm);
+        printReportBtn.addEventListener('click', printReport);
+        updateGradesBtn.addEventListener('click', () => {
+            gradeFormSectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+        modalCloseBtn.addEventListener('click', hideModal);
+
+        // Student Modal Listeners
+        currentStudentBtn.addEventListener('click', () => {
+            studentDropdown.classList.toggle('hidden');
+        });
+        manageStudentsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            studentDropdown.classList.add('hidden'); // Hide student dropdown
+            showStudentModal(); // Show student management modal
+        });
+        addStudentBtn.addEventListener('click', addStudent);
+        studentModalCloseBtn.addEventListener('click', hideStudentModal);
+
+        // AI Assistant Listeners
+        aiAssistantBtn.addEventListener('click', showAIAssistantModal);
+        aiSendBtn.addEventListener('click', sendAIMessage);
+        aiInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendAIMessage();
+            }
+        });
+        aiAssistantModalCloseBtn.addEventListener('click', hideAIAssistantModal);
+
+
+        // Initial setup on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            clearForm(); // Initialize form and dashboard
+            loadAllData(); // Load all students and curriculum (which is hardcoded)
+        });
+    </script>
+</body>
+</html>
