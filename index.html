@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CBC School System Dashboard (Simplified)</title>
+    <title>CBC School System Dashboard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter Font -->
@@ -268,14 +268,59 @@
         </div>
     </div>
 
+    <!-- API Settings Modal -->
+    <div id="apiSettingsModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full border border-gray-200">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">API Key Settings</h3>
+            <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Important:</strong>
+                <span class="block sm:inline">To use AI features, you need a Google Gemini API Key. Get one from <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-yellow-800 underline hover:text-yellow-900">Google AI Studio</a>.</span>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="geminiApiKeyInput" class="block text-gray-700 text-sm font-medium mb-1">Your Gemini API Key:</label>
+                    <input type="text" id="geminiApiKeyInput" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition shadow-sm" placeholder="Paste your API key here" required>
+                </div>
+                <button id="saveApiKeyBtn" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
+                    Save API Key
+                </button>
+                <button id="clearApiKeyBtn" class="w-full bg-red-500 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
+                    Clear API Key
+                </button>
+            </div>
+            <button id="apiSettingsModalCloseBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
     <!-- Student Management Modal -->
     <div id="studentModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4 hidden">
         <div class="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full border border-gray-200">
             <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Manage Students</h3>
             <div class="mb-6">
                 <h4 class="text-xl font-semibold text-gray-700 mb-3">Add New Student</h4>
-                <div class="flex gap-4">
+                <div class="flex flex-col sm:flex-row gap-4 mb-4">
                     <input type="text" id="newStudentName" class="flex-1 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm" placeholder="Student Name" />
+                    <select id="newStudentClass" class="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm">
+                        <option value="">Select Class/Grade</option>
+                        <option value="PP1">Pre-Primary 1</option>
+                        <option value="PP2">Pre-Primary 2</option>
+                        <option value="Grade 1">Grade 1</option>
+                        <option value="Grade 2">Grade 2</option>
+                        <option value="Grade 3">Grade 3</option>
+                        <option value="Grade 4">Grade 4</option>
+                        <option value="Grade 5">Grade 5</option>
+                        <option value="Grade 6">Grade 6</option>
+                        <option value="Junior Secondary 7">Junior Secondary 7</option>
+                        <option value="Junior Secondary 8">Junior Secondary 8</option>
+                        <option value="Junior Secondary 9">Junior Secondary 9</option>
+                        <option value="Senior Secondary 10">Senior Secondary 10</option>
+                        <option value="Senior Secondary 11">Senior Secondary 11</option>
+                        <option value="Senior Secondary 12">Senior Secondary 12</option>
+                    </select>
                     <button id="addStudentBtn" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition shadow-md">Add Student</button>
                 </div>
             </div>
@@ -342,6 +387,12 @@
                         </div>
                     </div>
                 </div>
+                <button id="apiSettingsBtn" class="p-2 rounded-full bg-blue-600 hover:bg-blue-500 transition duration-300 ease-in-out shadow-md" title="API Settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
                 <button id="aiAssistantBtn" class="p-2 rounded-full bg-blue-600 hover:bg-blue-500 transition duration-300 ease-in-out shadow-md" title="AI Assistant">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 17v5m6.44-4.118l.803.803L22 18.006 20.994 20l-1.107-1.107m-.715-6.533l-.802-.802C15.078 10.324 13.868 10 12 10c-1.868 0-3.078.324-4.373 1.629l-.802.802M12 14v4m-4 0h8m-1-10h.01M16 20h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h2" />
@@ -438,6 +489,25 @@
                 Input grades from 1 (Needs Improvement) to 5 (Excellent) for each subject.
             </p>
 
+            <div class="mb-6 flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <label for="assessmentPeriodSelect" class="block text-gray-700 text-sm font-medium mb-1">Assessment Period:</label>
+                    <select id="assessmentPeriodSelect" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm">
+                        <option value="">Select Period</option>
+                        <option value="Term 1">Term 1</option>
+                        <option value="Term 2">Term 2</option>
+                        <option value="Term 3">Term 3</option>
+                        <option value="Mid-Year">Mid-Year</option>
+                        <option value="End of Year">End of Year</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label for="currentStudentClassInForm" class="block text-gray-700 text-sm font-medium mb-1">Student Class/Grade:</label>
+                    <input type="text" id="currentStudentClassInForm" class="w-full p-3 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed" readonly disabled />
+                </div>
+            </div>
+
             <div id="subjectInputsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <!-- Subject inputs will be dynamically generated here -->
                 <p class="col-span-full text-center text-gray-500">
@@ -480,6 +550,7 @@
     <script type="module">
         // Global variables for local storage
         const LOCAL_STORAGE_PREFIX = 'cbc_app_local_'; // Prefix for all localStorage keys
+        let geminiApiKey = ""; // This will be loaded from localStorage or set by user
 
         // --- State Variables ---
         let currentGrades = {};
@@ -492,6 +563,7 @@
         let allStudents = [];
         let selectedStudentId = null;
         let selectedStudentName = "No Student Selected";
+        let selectedStudentClass = ""; // New: Store selected student's class
 
         // Hardcoded subjects with weights based on a common school setup
         // Weights are 1-5, higher means more important
@@ -543,7 +615,13 @@
         const currentStudentNameInHistory = document.getElementById('currentStudentNameInHistory');
         const subjectInputsContainer = document.getElementById('subjectInputsContainer');
         const subjectInputsMessageEl = document.getElementById('subjectInputsMessage');
+        const apiSettingsBtn = document.getElementById('apiSettingsBtn');
         const aiAssistantBtn = document.getElementById('aiAssistantBtn');
+
+        // New DOM elements for assessment period and student class in form
+        const assessmentPeriodSelect = document.getElementById('assessmentPeriodSelect');
+        const currentStudentClassInForm = document.getElementById('currentStudentClassInForm');
+
 
         // Modals and their elements
         const customModal = document.getElementById('customModal');
@@ -551,8 +629,15 @@
         const modalMessage = document.getElementById('modalMessage');
         const modalCloseBtn = document.getElementById('modalCloseBtn');
 
+        const apiSettingsModal = document.getElementById('apiSettingsModal');
+        const geminiApiKeyInput = document.getElementById('geminiApiKeyInput');
+        const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+        const clearApiKeyBtn = document.getElementById('clearApiKeyBtn');
+        const apiSettingsModalCloseBtn = document.getElementById('apiSettingsModalCloseBtn');
+
         const studentModal = document.getElementById('studentModal');
         const newStudentNameInput = document.getElementById('newStudentName');
+        const newStudentClassSelect = document.getElementById('newStudentClass'); // New: Class select in student modal
         const addStudentBtn = document.getElementById('addStudentBtn');
         const studentsListEl = document.getElementById('studentsList');
         const studentModalCloseBtn = document.getElementById('studentModalCloseBtn');
@@ -691,12 +776,34 @@
                     currentAssessmentResult.performanceLevel === 'Average' ? 'text-orange-600' :
                     'text-red-600';
 
+                // Calculate strengths and weaknesses
+                const sortedSubjects = [...currentSubjectChartData].sort((a, b) => b.grade - a.grade);
+                const strengths = sortedSubjects.slice(0, 2).filter(s => s.grade >= 4); // Top 2 subjects with good grades
+                const weaknesses = sortedSubjects.slice(-2).filter(s => s.grade <= 2); // Bottom 2 subjects with low grades
+
+                let strengthsHtml = '';
+                if (strengths.length > 0) {
+                    strengthsHtml = `<p class="text-sm text-gray-700 mt-2"><strong>Strengths:</strong> ${strengths.map(s => s.name).join(', ')}</p>`;
+                }
+
+                let weaknessesHtml = '';
+                if (weaknesses.length > 0) {
+                    weaknessesHtml = `<p class="text-sm text-gray-700"><strong>Areas for Improvement:</strong> ${weaknesses.map(s => s.name).join(', ')}</p>`;
+                }
+
+
                 performanceSummaryEl.innerHTML = `
                     <div class="text-5xl font-extrabold mb-2 ${performanceLevelClass}">
                         ${currentAssessmentResult.performanceLevel}
                     </div>
                     <p class="text-xl text-gray-600">
                         Average Score: <span class="font-bold">${currentAssessmentResult.averageScore}</span> / 5
+                    </p>
+                    ${strengthsHtml}
+                    ${weaknessesHtml}
+                    <p class="text-sm text-gray-600 mt-2">
+                        Last Assessed: <span class="font-medium">${currentAssessmentResult.readableTimestamp}</span>
+                        (${currentAssessmentResult.assessmentPeriod || 'N/A'})
                     </p>
                 `;
             } else {
@@ -792,7 +899,7 @@
                 line.setAttribute('y1', y);
                 line.setAttribute('x2', svgWidth - padding);
                 line.setAttribute('y2', y);
-                line.setAttribute('stroke', 'currentColor');
+            line.setAttribute('stroke', 'currentColor');
                 line.setAttribute('stroke-width', '0.5');
                 line.classList.add('chart-grid-line');
                 gridGroup.appendChild(line);
@@ -907,10 +1014,11 @@
 
 
         /**
-         * Populates the grade input form with given grades.
+         * Populates the grade input form with given grades and assessment period.
          * @param {Object} gradesData - Object containing subject grades.
+         * @param {string} period - The assessment period.
          */
-        function populateForm(gradesData) {
+        function populateForm(gradesData, period = "") {
             currentGrades = { ...gradesData }; // Update current grades state
             configuredSubjects.forEach(subject => {
                 const input = document.getElementById(subject.id);
@@ -918,6 +1026,7 @@
                     input.value = gradesData[subject.id] || '';
                 }
             });
+            assessmentPeriodSelect.value = period; // Set the assessment period dropdown
         }
 
         /**
@@ -931,6 +1040,7 @@
                     input.value = '';
                 }
             });
+            assessmentPeriodSelect.value = ""; // Clear assessment period
             currentAssessmentResult = null;
             currentRecommendations = [];
             currentSubjectChartData = [];
@@ -983,6 +1093,12 @@
                 return;
             }
 
+            const assessmentPeriod = assessmentPeriodSelect.value;
+            if (!assessmentPeriod) {
+                showModal("Please select an Assessment Period.", "Missing Information");
+                return;
+            }
+
             let totalWeightedScore = 0;
             let totalWeight = 0;
             let subjectCount = 0;
@@ -1029,7 +1145,7 @@
             currentSubjectChartData = subjectDataForChart;
 
             // Generate course recommendations (enhanced)
-            const generatedRecommendations = await generateRecommendationsWithLLM(performanceLevel, subjectStrengths);
+            const generatedRecommendations = await generateRecommendationsWithLLM(performanceLevel, subjectStrengths, selectedStudentClass, assessmentPeriod);
             currentRecommendations = generatedRecommendations;
 
             // Update UI
@@ -1038,26 +1154,33 @@
             renderRecommendations(currentRecommendations);
 
             // Save to Local Storage
-            saveAssessment();
+            saveAssessment(assessmentPeriod, selectedStudentClass);
         }
 
         /**
          * Generates recommendations using the Gemini LLM.
          * @param {string} performanceLevel - The calculated performance level.
          * @param {Object} subjectStrengths - Object of subject IDs to grades.
+         * @param {string} studentClass - The student's current class/grade level.
+         * @param {string} assessmentPeriod - The current assessment period.
          * @returns {Promise<Array<string>>} Array of recommendation strings.
          */
-        async function generateRecommendationsWithLLM(performanceLevel, subjectStrengths) {
+        async function generateRecommendationsWithLLM(performanceLevel, subjectStrengths, studentClass, assessmentPeriod) {
+            if (!geminiApiKey) {
+                showModal("A Gemini API Key is required for AI recommendations. Please go to API Settings (gear icon) to enter your key.", "API Key Missing");
+                return ["AI recommendations disabled. Please provide an API key."];
+            }
+
             showToast("Generating personalized recommendations...", "info", 5000);
             const prompt = `
-                A student has achieved a performance level of "${performanceLevel}" in the CBC curriculum.
+                A student in ${studentClass} has achieved a performance level of "${performanceLevel}" for the ${assessmentPeriod} assessment in the CBC curriculum.
                 Their subject strengths (grade out of 5) are:
                 ${Object.entries(subjectStrengths).map(([id, grade]) => {
                     const subject = configuredSubjects.find(s => s.id === id);
                     return subject ? `${subject.name}: ${grade}` : '';
                 }).filter(Boolean).join('\n')}
 
-                Based on this, provide 3-5 concise and encouraging career and course recommendations suitable for a Kenyan student.
+                Based on this, provide 3-5 concise and encouraging career and course recommendations suitable for a Kenyan student at this academic stage.
                 Focus on practical and relevant paths within the Kenyan context.
                 Also, include a general piece of advice.
                 Format the output as a JSON array of strings, like:
@@ -1077,8 +1200,8 @@
                         }
                     }
                 };
-                const apiKey = ""; // Canvas will provide this
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                // Use the stored API key here
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -1107,15 +1230,17 @@
             } catch (e) {
                 console.error("Error calling Gemini API for recommendations:", e);
                 showToast(`Failed to get recommendations: ${e.message}`, "error");
-                return ["Failed to generate recommendations. Please check your internet connection or try again later."];
+                return ["Failed to generate recommendations. Please check your internet connection or try again later.", `Error details: ${e.message}`];
             }
         }
 
 
         /**
          * Saves the current assessment to localStorage.
+         * @param {string} assessmentPeriod - The period of the assessment.
+         * @param {string} classLevel - The student's class level at the time of assessment.
          */
-        function saveAssessment() {
+        function saveAssessment(assessmentPeriod, classLevel) {
             if (!selectedStudentId) {
                 showModal("Student not selected. Cannot save assessment.", "Save Error");
                 return;
@@ -1133,6 +1258,8 @@
                 recommendations: currentRecommendations,
                 timestamp: timestamp.getTime(),
                 readableTimestamp: timestamp.toLocaleString(),
+                assessmentPeriod: assessmentPeriod, // New: Save assessment period
+                classLevelAtAssessment: classLevel // New: Save class level at assessment
             };
 
             // Load existing assessments for this student
@@ -1187,7 +1314,8 @@
                 listItem.className = 'flex items-center justify-between bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition duration-200 ease-in-out';
                 listItem.innerHTML = `
                     <div class="flex-1 cursor-pointer" data-id="${assessment.id}">
-                        <p class="font-semibold text-gray-800">${assessment.readableTimestamp}</p>
+                        <p class="font-semibold text-gray-800">${assessment.readableTimestamp} (${assessment.assessmentPeriod || 'N/A'})</p>
+                        <p class="text-sm text-gray-600">Class: ${assessment.classLevelAtAssessment || 'N/A'}</p>
                         <p class="text-sm text-gray-600">Performance: <span class="font-medium ${
                             assessment.result.performanceLevel === 'Excellent' ? 'text-green-600' :
                             assessment.result.performanceLevel === 'Very Good' ? 'text-lime-600' :
@@ -1221,7 +1349,7 @@
         function loadAssessment(assessmentId) {
             const assessment = historicalAssessments.find(a => a.id === assessmentId);
             if (assessment) {
-                populateForm(assessment.grades);
+                populateForm(assessment.grades, assessment.assessmentPeriod); // Pass assessment period
                 currentAssessmentResult = assessment.result;
                 currentRecommendations = assessment.recommendations;
                 // Reconstruct subject chart data
@@ -1294,6 +1422,7 @@
                 document.getElementById('toastContainer'), // Hide toasts
                 document.getElementById('customModal'), // Hide modals if open
                 document.getElementById('studentModal'),
+                document.getElementById('apiSettingsModal'),
                 document.getElementById('aiAssistantModal')
             ];
 
@@ -1318,10 +1447,41 @@
             });
         }
 
+        // --- API Key Management Functions ---
+        function showApiSettingsModal() {
+            apiSettingsModal.classList.remove('hidden');
+            geminiApiKeyInput.value = geminiApiKey; // Populate with current key
+        }
+
+        function hideApiSettingsModal() {
+            apiSettingsModal.classList.add('hidden');
+        }
+
+        function saveApiKey() {
+            const key = geminiApiKeyInput.value.trim();
+            if (key) {
+                geminiApiKey = key;
+                saveData('gemini_api_key', geminiApiKey);
+                showToast("API Key saved successfully!", "success");
+                hideApiSettingsModal();
+            } else {
+                showToast("Please enter a valid API Key.", "error");
+            }
+        }
+
+        function clearApiKey() {
+            geminiApiKey = "";
+            deleteData('gemini_api_key');
+            geminiApiKeyInput.value = "";
+            showToast("API Key cleared.", "info");
+            hideApiSettingsModal();
+        }
+
         // --- Student Management Functions (Local Storage) ---
         function showStudentModal() {
             studentModal.classList.remove('hidden');
             newStudentNameInput.value = '';
+            newStudentClassSelect.value = ''; // Clear class selection
             loadStudents(); // Ensure latest list is loaded
         }
 
@@ -1330,23 +1490,25 @@
         }
 
         function loadStudents() {
-            allStudents = loadData(`students`, []); // No localUserId prefix now
+            allStudents = loadData(`students`, []);
             renderStudentsList();
             // If no student is selected, and there are students, select the first one
             if (!selectedStudentId && allStudents.length > 0) {
-                selectStudent(allStudents[0].id, allStudents[0].name);
+                selectStudent(allStudents[0].id, allStudents[0].name, allStudents[0].classLevel);
             } else if (selectedStudentId && !allStudents.some(s => s.id === selectedStudentId)) {
                 // If selected student was deleted, reset selection
                 selectedStudentId = null;
                 selectedStudentName = "No Student Selected";
+                selectedStudentClass = "";
                 clearForm();
                 loadHistoricalAssessments(); // Reset listener
                 updateDashboardMessages();
             } else if (selectedStudentId) {
-                // Update name in case it changed
+                // Update name and class in case it changed or was just loaded
                 const currentStudent = allStudents.find(s => s.id === selectedStudentId);
                 if (currentStudent) {
                     selectedStudentName = currentStudent.name;
+                    selectedStudentClass = currentStudent.classLevel;
                     updateDashboardMessages();
                 }
             }
@@ -1354,45 +1516,62 @@
 
         function addStudent() {
             const studentName = newStudentNameInput.value.trim();
+            const studentClass = newStudentClassSelect.value; // Get selected class
+
             if (!studentName) {
                 showToast("Please enter a student name.", "error");
+                return;
+            }
+            if (!studentClass) {
+                showToast("Please select a student's class/grade level.", "error");
                 return;
             }
 
             const newStudent = {
                 id: generateUUID(),
                 name: studentName,
+                classLevel: studentClass, // New: Save class level
                 createdAt: new Date().getTime()
             };
 
             allStudents.push(newStudent);
-            saveData(`students`, allStudents); // No localUserId prefix now
+            saveData(`students`, allStudents);
             newStudentNameInput.value = '';
+            newStudentClassSelect.value = ''; // Clear class selection after adding
             showToast(`Student "${studentName}" added!`, "success");
             loadStudents(); // Re-render the list
         }
 
-        function selectStudent(studentId, studentName) {
+        /**
+         * Selects a student and updates the UI.
+         * @param {string} studentId
+         * @param {string} studentName
+         * @param {string} studentClass - The class level of the selected student.
+         */
+        function selectStudent(studentId, studentName, studentClass) {
             selectedStudentId = studentId;
             selectedStudentName = studentName;
+            selectedStudentClass = studentClass; // Store the selected student's class
             updateDashboardMessages();
             studentDropdown.classList.add('hidden'); // Hide dropdown after selection
             clearForm(); // Clear existing data for new student
             loadHistoricalAssessments(); // Load assessments for new student
-            showToast(`Selected student: ${studentName}`, "info");
+            currentStudentClassInForm.value = selectedStudentClass; // Update class in the form
+            showToast(`Selected student: ${studentName} (${studentClass})`, "info");
         }
 
         function deleteStudent(studentId) {
             // Delete assessments for this student first
-            deleteData(`assessments_${studentId}`); // No localUserId prefix now
+            deleteData(`assessments_${studentId}`);
 
             // Then delete the student from the list
             allStudents = allStudents.filter(s => s.id !== studentId);
-            saveData(`students`, allStudents); // No localUserId prefix now
+            saveData(`students`, allStudents);
 
             if (selectedStudentId === studentId) {
                 selectedStudentId = null;
                 selectedStudentName = "No Student Selected";
+                selectedStudentClass = "";
                 clearForm();
                 loadHistoricalAssessments(); // Reset listener
             }
@@ -1415,9 +1594,9 @@
                 const modalListItem = document.createElement('div');
                 modalListItem.className = 'flex items-center justify-between bg-gray-50 p-3 rounded-md border border-gray-200';
                 modalListItem.innerHTML = `
-                    <span class="font-medium text-gray-800">${student.name}</span>
+                    <span class="font-medium text-gray-800">${student.name} (${student.classLevel || 'N/A'})</span>
                     <div class="flex gap-2">
-                        <button class="select-student-btn bg-blue-100 text-blue-600 px-3 py-1 rounded-md text-sm hover:bg-blue-200 transition" data-id="${student.id}" data-name="${student.name}">Select</button>
+                        <button class="select-student-btn bg-blue-100 text-blue-600 px-3 py-1 rounded-md text-sm hover:bg-blue-200 transition" data-id="${student.id}" data-name="${student.name}" data-class="${student.classLevel || ''}">Select</button>
                         <button class="delete-student-btn bg-red-100 text-red-600 px-3 py-1 rounded-md text-sm hover:bg-red-200 transition" data-id="${student.id}">Delete</button>
                     </div>
                 `;
@@ -1429,14 +1608,15 @@
                 dropdownItem.className = 'block px-4 py-2 text-gray-700 hover:bg-gray-100 select-student-btn';
                 dropdownItem.setAttribute('data-id', student.id);
                 dropdownItem.setAttribute('data-name', student.name);
-                dropdownItem.textContent = student.name;
+                dropdownItem.setAttribute('data-class', student.classLevel || '');
+                dropdownItem.textContent = `${student.name} (${student.classLevel || 'N/A'})`;
                 studentListDropdown.appendChild(dropdownItem);
             });
 
             // Add event listeners for dynamically created buttons
             studentsListEl.querySelectorAll('.select-student-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    selectStudent(e.target.dataset.id, e.target.dataset.name);
+                    selectStudent(e.target.dataset.id, e.target.dataset.name, e.target.dataset.class);
                     hideStudentModal();
                 });
             });
@@ -1445,12 +1625,16 @@
             });
 
             studentListDropdown.querySelectorAll('.select-student-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => selectStudent(e.target.dataset.id, e.target.dataset.name));
+                btn.addEventListener('click', (e) => selectStudent(e.target.dataset.id, e.target.dataset.name, e.target.dataset.class));
             });
         }
 
         // --- AI Assistant Functions ---
         function showAIAssistantModal() {
+            if (!geminiApiKey) {
+                showModal("A Gemini API Key is required to use the AI Assistant. Please go to API Settings (gear icon) to enter your key.", "API Key Missing");
+                return;
+            }
             aiAssistantModal.classList.remove('hidden');
             chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight; // Scroll to bottom
         }
@@ -1463,6 +1647,11 @@
             const userMessage = aiInput.value.trim();
             if (!userMessage) return;
 
+            if (!geminiApiKey) {
+                showModal("A Gemini API Key is required to use the AI Assistant. Please go to API Settings (gear icon) to enter your key.", "API Key Missing");
+                return;
+            }
+
             appendMessage('user', userMessage);
             aiInput.value = ''; // Clear input
 
@@ -1472,15 +1661,16 @@
             try {
                 let chatHistory = [];
                 // Include current grades and performance for context
-                let context = `Current student performance: ${currentAssessmentResult ? currentAssessmentResult.performanceLevel + ' (Avg: ' + currentAssessmentResult.averageScore + ')' : 'Not assessed yet'}. `;
+                let context = `Current student: ${selectedStudentName} (Class: ${selectedStudentClass}). `;
+                context += `Current performance: ${currentAssessmentResult ? currentAssessmentResult.performanceLevel + ' (Avg: ' + currentAssessmentResult.averageScore + ')' : 'Not assessed yet'}. `;
                 context += `Subject grades: ${JSON.stringify(currentGrades)}. `;
                 context += `Configured subjects: ${JSON.stringify(configuredSubjects)}. `;
 
                 chatHistory.push({ role: "user", parts: [{ text: context + userMessage }] });
 
                 const payload = { contents: chatHistory };
-                const apiKey = ""; // Canvas will provide this
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                // Use the stored API key here
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -1528,11 +1718,12 @@
             return bubble; // Return the bubble element for potential updates (e.g., loading message)
         }
 
-        // --- Load All Data (on app start) ---
-        function loadAllData() {
+        // --- Initial Load & UI Updates ---
+        function initializeApp() {
+            geminiApiKey = loadData('gemini_api_key', ""); // Load API key on start
+            clearForm(); // Initialize form and dashboard
             loadStudents(); // This will also handle selecting a student if available
-            // Curriculum is now hardcoded, so no need to load from storage
-            updateDashboardMessages();
+            updateDashboardMessages(); // Ensure all messages are consistent
         }
 
         // --- Update Dashboard Messages ---
@@ -1548,7 +1739,7 @@
             selectedStudentNameEl.textContent = selectedStudentName;
             currentStudentNameInForm.textContent = selectedStudentName;
             currentStudentNameInHistory.textContent = selectedStudentName;
-
+            currentStudentClassInForm.value = selectedStudentClass; // Update class in the form
             renderSubjectInputs(); // Re-render the grade input form
         }
 
@@ -1562,6 +1753,12 @@
         });
         darkModeToggle.addEventListener('click', toggleDarkMode);
         modalCloseBtn.addEventListener('click', hideModal);
+
+        // API Settings Listeners
+        apiSettingsBtn.addEventListener('click', showApiSettingsModal);
+        saveApiKeyBtn.addEventListener('click', saveApiKey);
+        clearApiKeyBtn.addEventListener('click', clearApiKey);
+        apiSettingsModalCloseBtn.addEventListener('click', hideApiSettingsModal);
 
         // Student Modal Listeners
         currentStudentBtn.addEventListener('click', () => {
@@ -1587,10 +1784,7 @@
 
 
         // Initial setup on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            clearForm(); // Initialize form and dashboard
-            loadAllData(); // Load all students and curriculum (which is hardcoded)
-        });
+        document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
 </html>
